@@ -39,11 +39,6 @@ export default function ArticleItem({
               {article.reading_time} min read
             </CaptionText>
           )}
-          {article.view_count && (
-            <CaptionText className="ml-4">
-              {article.view_count} views
-            </CaptionText>
-          )}
         </div>
 
         {/* Title */}

@@ -41,7 +41,6 @@ export async function getArticles(
     const { data: articles, error, count } = await client
       .from('stories')
       .select('*', { count: 'exact' })
-      .eq('status', 'published')
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -76,7 +75,6 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       .from('stories')
       .select('*')
       .eq('url', slug)
-      .eq('status', 'published')
       .single();
 
     // If not found by URL, try matching slug from URL field
@@ -84,7 +82,6 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       const { data: allData, error: allError } = await client
         .from('stories')
         .select('*')
-        .eq('status', 'published')
         .limit(1000); // Get all stories to search
 
       if (!allError && allData) {
@@ -128,7 +125,6 @@ export async function searchArticles(
     const { data: articles, error, count } = await client
       .from('stories')
       .select('*', { count: 'exact' })
-      .eq('status', 'published')
       .or(`title.ilike.%${query}%,content.ilike.%${query}%,description.ilike.%${query}%`)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
@@ -165,7 +161,6 @@ export async function getArticlesClient(
     const { data: articles, error, count } = await supabase
       .from('stories')
       .select('*', { count: 'exact' })
-      .eq('status', 'published')
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 

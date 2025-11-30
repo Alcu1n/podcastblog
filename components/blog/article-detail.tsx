@@ -83,17 +83,23 @@ export default function ArticleDetail({ article }: ArticleDetailProps) {
                 {children}
               </pre>
             ),
-            code: ({inline, children}) => {
-              if (inline) {
+            code: ({className, children, ...props}) => {
+              const match = /language-(\w+)/.exec(className || '');
+              const isInline = !className && !match;
+
+              if (isInline) {
                 return (
-                  <code className="bg-gray-200 px-2 py-1 font-mono text-sm border-2 border-black">
+                  <code className="bg-gray-200 px-2 py-1 font-mono text-sm border-2 border-black" {...props}>
                     {children}
                   </code>
                 );
               }
+
               // For code blocks, return a code element with proper styling
               return (
-                <code>{children}</code>
+                <code className={className} {...props}>
+                  {children}
+                </code>
               );
             },
             // Blockquote styling

@@ -1,65 +1,162 @@
-import Image from "next/image";
+import Container from '@/components/layout/container';
+import ArticleList from '@/components/blog/article-list';
+import { H1, H3, BodyText } from '@/components/ui/typography';
+import { Button } from '@/components/ui/button';
+import { getArticles } from '@/lib/api';
+import { isSupabaseConfigured } from '@/lib/supabase';
+import type { Article } from '@/lib/types';
 
-export default function Home() {
+// Mock data fallback for development when Supabase is not configured
+const mockArticles: Article[] = [
+  {
+    id: '1',
+    title: 'Good Taste in Software Development',
+    slug: 'good-taste-software-development',
+    content: 'Content here...',
+    excerpt: 'Exploring Linus Torvalds\' philosophy of "good taste" in code and how it applies to modern software development.',
+    published_at: '2024-01-15T10:00:00Z',
+    created_at: '2024-01-15T10:00:00Z',
+    updated_at: '2024-01-15T10:00:00Z',
+    status: 'published',
+    view_count: 42,
+    reading_time: 8,
+  },
+  {
+    id: '2',
+    title: 'Neo-Brutalism: The Anti-Design Movement',
+    slug: 'neo-brutalism-anti-design',
+    content: 'Content here...',
+    excerpt: 'How Neo-Brutalism challenges conventional UI design and brings honesty back to digital interfaces.',
+    published_at: '2024-01-10T14:30:00Z',
+    created_at: '2024-01-10T14:30:00Z',
+    updated_at: '2024-01-10T14:30:00Z',
+    status: 'published',
+    view_count: 128,
+    reading_time: 6,
+  },
+  {
+    id: '3',
+    title: 'Data Structures Over Control Flow',
+    slug: 'data-structures-control-flow',
+    content: 'Content here...',
+    excerpt: 'Why manipulating data structures is superior to manipulating control flow in complex systems.',
+    published_at: '2024-01-05T09:15:00Z',
+    created_at: '2024-01-05T09:15:00Z',
+    updated_at: '2024-01-05T09:15:00Z',
+    status: 'published',
+    view_count: 89,
+    reading_time: 12,
+  },
+  {
+    id: '4',
+    title: 'The Art of API Design',
+    slug: 'art-api-design',
+    content: 'Content here...',
+    excerpt: 'Principles for creating APIs that developers actually enjoy using and maintaining.',
+    published_at: '2023-12-28T16:45:00Z',
+    created_at: '2023-12-28T16:45:00Z',
+    updated_at: '2023-12-28T16:45:00Z',
+    status: 'published',
+    view_count: 156,
+    reading_time: 10,
+  },
+];
+
+interface HomePageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+// Enable ISR for 5 minutes
+export const revalidate = 300;
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const resolvedSearchParams = await searchParams;
+  const page = parseInt(resolvedSearchParams.page || '1', 10);
+  const useRealData = isSupabaseConfigured();
+
+  let articles = mockArticles;
+  let totalCount = mockArticles.length;
+  let totalPages = Math.ceil(totalCount / 10);
+  let error = null;
+
+  if (useRealData) {
+    try {
+      const result = await getArticles(page, 10);
+      articles = result.articles;
+      totalCount = result.totalCount;
+      totalPages = result.totalPages;
+    } catch (err) {
+      console.error('Failed to fetch articles from Supabase, using mock data:', err);
+      error = 'Failed to load articles from database. Showing sample content.';
+    }
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <Container size="md">
+      <div className="py-8 md:py-16">
+        {/* Hero section */}
+        <header className="mb-12 border-b-8 border-black pb-8">
+          <H1 className="mb-4">
+            Neo-Brutalism Blog
+          </H1>
+          <BodyText className="text-lg md:text-xl max-w-3xl">
+            Clean code, good taste, brutal design. Thoughts on programming,
+            architecture, and the art of software engineering.
+          </BodyText>
+        </header>
+
+        {/* Article list */}
+        <section className="mb-12">
+          <ArticleList
+            articles={articles}
+            loading={false}
+            error={error}
+          />
+        </section>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <nav className="flex justify-center space-x-4">
+            {page > 1 && (
+              <a
+                href={`?page=${page - 1}`}
+                className="inline-flex items-center justify-center px-6 py-3 font-mono font-bold text-black border-4 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-all duration-100 bg-white"
+              >
+                ← Previous
+              </a>
+            )}
+
+            <span className="inline-flex items-center justify-center px-6 py-3 font-mono font-bold text-black border-4 border-black">
+              Page {page} of {totalPages}
+            </span>
+
+            {page < totalPages && (
+              <a
+                href={`?page=${page + 1}`}
+                className="inline-flex items-center justify-center px-6 py-3 font-mono font-bold text-black border-4 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-all duration-100 bg-white"
+              >
+                Next →
+              </a>
+            )}
+          </nav>
+        )}
+
+        {/* Call to action */}
+        <div className="mt-16 text-center">
+          <div className="border-4 border-black bg-yellow-100 p-8 inline-block">
+            <H3 className="mb-4">Want to contribute?</H3>
+            <BodyText>
+              This blog is built with Next.js 16, React 19, and good taste.
+              Fork it on GitHub and make it your own.
+            </BodyText>
+            <div className="mt-6">
+              <Button variant="accent">
+                View on GitHub
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+    </Container>
   );
 }

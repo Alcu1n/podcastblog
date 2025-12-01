@@ -192,17 +192,17 @@ export async function generateMetadata({ params }: ArticlePageProps) {
   }
 
   return {
-    title: `${article.title} | Neo-Brutalism Blog`,
+    title: `${article.title} | Podcast Story`,
     description:
       article.excerpt ||
       article.description ||
-      "A fascinating article about programming and technology.",
+      "An extraordinary long-form story from a world-class podcast.",
     openGraph: {
       title: article.title,
       description:
         article.excerpt ||
         article.description ||
-        "A fascinating article about programming and technology.",
+        "An extraordinary long-form story from a world-class podcast.",
       type: "article",
       publishedTime: article.published_at,
       modifiedTime: article.updated_at,

@@ -11,15 +11,18 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Neo-Brutalism Blog",
-  description: "A minimalist blog with Neo-Brutalism design and good taste",
+  title: "Podcast Story",
+  description: "A curated collection of extraordinary long-form stories from the world's best podcasts",
+  icons: {
+    icon: "/favicon.png",
+  },
   openGraph: {
-    title: "Neo-Brutalism Blog",
-    description: "A minimalist blog with Neo-Brutalism design and good taste",
+    title: "Podcast Story",
+    description: "A curated collection of extraordinary long-form stories from the world's best podcasts",
     type: "website",
   },
-  keywords: ["programming", "blog", "neo-brutalism", "design", "technology"],
-  authors: [{ name: "Brutal Blog" }],
+  keywords: ["podcast", "long stories", "storytelling", "curated content", "audio stories", "narrative"],
+  authors: [{ name: "Podcast Story" }],
 };
 
 export default function RootLayout({

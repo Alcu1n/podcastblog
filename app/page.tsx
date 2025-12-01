@@ -111,13 +111,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
             <div className="bg-gray-50 border-l-4 border-black p-4 mb-6">
               <BodyText className="text-lg font-medium">
-                A curated collection of extraordinary long-form stories from the world's best podcasts.
+                A curated collection of extraordinary long-form stories from the
+                world's best podcasts.
               </BodyText>
             </div>
 
             <div className="flex items-center gap-6 text-sm">
               <span className="inline-flex items-center gap-2 px-3 py-1 bg-black text-white font-mono">
-                📚 Long Reads
+                Long Reads
               </span>
               <span className="text-gray-500 font-mono">
                 Updated weekly with compelling stories

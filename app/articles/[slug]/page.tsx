@@ -1,16 +1,16 @@
-import { notFound } from 'next/navigation';
-import Container from '@/components/layout/container';
-import ArticleDetail from '@/components/blog/article-detail';
-import { getArticleBySlug } from '@/lib/api';
-import { isSupabaseConfigured } from '@/lib/supabase';
-import type { Article } from '@/lib/types';
+import { notFound } from "next/navigation";
+import Container from "@/components/layout/container";
+import ArticleDetail from "@/components/blog/article-detail";
+import { getArticleBySlug } from "@/lib/api";
+import { isSupabaseConfigured } from "@/lib/supabase";
+import type { Article } from "@/lib/types";
 
 // Mock article data - fallback for development when Supabase is not configured
 const mockArticles: Record<string, Article> = {
-  'good-taste-software-development': {
-    id: '1',
-    title: 'Good Taste in Software Development',
-    slug: 'good-taste-software-development',
+  "good-taste-software-development": {
+    id: "1",
+    title: "Good Taste in Software Development",
+    slug: "good-taste-software-development",
     content: `
 "Good taste" in software development is a concept that Linus Torvalds has often spoken about. It's not just about writing code that works—it's about writing code that is elegant, maintainable, and shows a deep understanding of the problem domain.
 
@@ -67,18 +67,19 @@ Good taste isn't something you're born with—it's developed through experience 
 
 The key is to always be asking: "Is there a simpler, more elegant way to solve this problem?"
     `,
-    excerpt: 'Exploring Linus Torvalds\' philosophy of "good taste" in code and how it applies to modern software development.',
-    published_at: '2024-01-15T10:00:00Z',
-    created_at: '2024-01-15T10:00:00Z',
-    updated_at: '2024-01-15T10:00:00Z',
-    status: 'published',
+    excerpt:
+      'Exploring Linus Torvalds\' philosophy of "good taste" in code and how it applies to modern software development.',
+    published_at: "2024-01-15T10:00:00Z",
+    created_at: "2024-01-15T10:00:00Z",
+    updated_at: "2024-01-15T10:00:00Z",
+    status: "published",
     view_count: 42,
     reading_time: 8,
   },
-  'neo-brutalism-anti-design': {
-    id: '2',
-    title: 'Neo-Brutalism: The Anti-Design Movement',
-    slug: 'neo-brutalism-anti-design',
+  "neo-brutalism-anti-design": {
+    id: "2",
+    title: "Neo-Brutalism: The Anti-Design Movement",
+    slug: "neo-brutalism-anti-design",
     content: `
 Neo-Brutalism represents a fascinating counter-movement in digital design. While mainstream UI design trends toward ever more subtle gradients, rounded corners, and minimalist aesthetics, Neo-Brutalism embraces the opposite: hard edges, bold borders, and unapologetic visibility.
 
@@ -124,11 +125,12 @@ Neo-Brutalism isn't for everyone or every project. But as we move toward a futur
 
 It challenges us to think about why we make certain design choices and whether the current trends are always the best solution. Sometimes, the most brutal approach is actually the most honest and effective.
     `,
-    excerpt: 'How Neo-Brutalism challenges conventional UI design and brings honesty back to digital interfaces.',
-    published_at: '2024-01-10T14:30:00Z',
-    created_at: '2024-01-10T14:30:00Z',
-    updated_at: '2024-01-10T14:30:00Z',
-    status: 'published',
+    excerpt:
+      "How Neo-Brutalism challenges conventional UI design and brings honesty back to digital interfaces.",
+    published_at: "2024-01-10T14:30:00Z",
+    created_at: "2024-01-10T14:30:00Z",
+    updated_at: "2024-01-10T14:30:00Z",
+    status: "published",
     view_count: 128,
     reading_time: 6,
   },
@@ -161,7 +163,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <Container size="md">
-      <div className="py-2 md:py-4">
+      <div className="py-1 md:py-2">
         <ArticleDetail article={article} />
       </div>
     </Container>
@@ -184,18 +186,24 @@ export async function generateMetadata({ params }: ArticlePageProps) {
 
   if (!article) {
     return {
-      title: 'Article Not Found',
-      description: 'The requested article could not be found.',
+      title: "Article Not Found",
+      description: "The requested article could not be found.",
     };
   }
 
   return {
     title: `${article.title} | Neo-Brutalism Blog`,
-    description: article.excerpt || article.description || 'A fascinating article about programming and technology.',
+    description:
+      article.excerpt ||
+      article.description ||
+      "A fascinating article about programming and technology.",
     openGraph: {
       title: article.title,
-      description: article.excerpt || article.description || 'A fascinating article about programming and technology.',
-      type: 'article',
+      description:
+        article.excerpt ||
+        article.description ||
+        "A fascinating article about programming and technology.",
+      type: "article",
       publishedTime: article.published_at,
       modifiedTime: article.updated_at,
     },

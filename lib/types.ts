@@ -16,7 +16,7 @@ export interface Article {
   url?: string;
   meta?: any;
   description?: string;
-  categories?: string[];
+  categories?: string;
 }
 
 // API response types
@@ -62,6 +62,58 @@ export interface ApiError {
   message: string;
   status?: number;
   code?: string;
+}
+
+// Admin management types
+export interface ArticleFormData {
+  title: string;
+  content: string;
+  excerpt?: string;
+  status: ArticleStatus;
+  url?: string;
+  description?: string;
+  categories?: string;
+}
+
+export interface ArticleCreateInput extends ArticleFormData {
+  // Optional: auto-generated fields
+  slug?: string;
+  published_at?: string;
+}
+
+export interface ArticleUpdateInput extends Partial<ArticleFormData> {
+  id: string;
+  updated_at?: string;
+}
+
+export interface AdminActionResponse {
+  success: boolean;
+  data?: Article;
+  error?: string;
+}
+
+// Admin component props
+export interface ArticleFormProps {
+  article?: Article; // For editing mode
+  onSubmit: (data: ArticleFormData) => Promise<void>;
+  onCancel: () => void;
+  loading?: boolean;
+}
+
+export interface ArticleAdminListProps {
+  articles: Article[];
+  onEdit: (article: Article) => void;
+  onDelete: (articleId: string) => Promise<void>;
+  onRefresh: () => Promise<void>;
+  loading?: boolean;
+}
+
+// Form validation types
+export interface FormErrors {
+  title?: string;
+  content?: string;
+  slug?: string;
+  url?: string;
 }
 
 // Utility types

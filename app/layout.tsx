@@ -14,7 +14,9 @@ export const metadata: Metadata = {
   title: "Podcast Story",
   description: "A curated collection of extraordinary long-form stories from the world's best podcasts",
   icons: {
-    icon: "/favicon.png",
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
   },
   openGraph: {
     title: "Podcast Story",

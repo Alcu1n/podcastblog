@@ -48,8 +48,10 @@ export default function CategoryDropdown() {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 transition-colors ${
-          isOpen ? "bg-gray-100 text-black" : "hover:bg-gray-100"
+        className={`flex items-center gap-2 transition-colors border-2 border-transparent ${
+          isOpen
+            ? "bg-black text-white border-black"
+            : "hover:bg-black hover:text-white hover:border-black"
         }`}
         aria-expanded={isOpen}
         aria-haspopup="true"

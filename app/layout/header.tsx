@@ -85,10 +85,10 @@ export default function Header() {
   return (
     <header className={headerClasses}>
       <Container>
-        <div className="flex items-center justify-between h-24">
+        <div className="flex items-center justify-between h-16 md:h-24">
           {/* Logo */}
           <Link href="/" className="group">
-            <H1 className="text-2xl md:text-3xl group-hover:text-red-500 transition-all duration-200 inline-block px-4 py-2 bg-white border-4 border-black rounded-2xl shadow-[4px_4px_0px_rgba(0,0,0,1)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+            <H1 className="text-lg md:text-2xl lg:text-3xl group-hover:text-red-500 transition-all duration-200 inline-block px-2 py-1 md:px-4 md:py-2 bg-white border-4 border-black rounded-2xl shadow-[4px_4px_0px_rgba(0,0,0,1)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-[2px_2px_0px_rgba(0,0,0,1)]">
               PodCast Story
             </H1>
           </Link>

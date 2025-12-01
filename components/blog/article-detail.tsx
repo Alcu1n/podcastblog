@@ -60,53 +60,53 @@ export default function ArticleDetail({ article }: ArticleDetailProps) {
     <article className="max-w-4xl mx-auto">
       {/* Header */}
       <header className="mb-8 border-b-8 border-black pb-8">
-        {/* Meta information - Single Row with Category and Status */}
-        <div className="mb-6 flex items-center justify-between">
-          {/* Left: Date and Reading Time */}
-          <div className="flex items-center gap-4 text-left">
-            <div className="inline-flex items-center gap-1 px-3 py-2 text-xs font-mono bg-gray-100 border-2 border-black">
+        {/* Meta information - First Row: Date and Reading Time */}
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          {/* Date */}
+          <div className="inline-flex items-center gap-1 px-3 py-2 text-xs font-mono bg-gray-100 border-2 border-black flex-shrink-0">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {format(new Date(article.published_at), 'MMM dd, yyyy')}
+          </div>
+
+          {/* Reading Time */}
+          {article.reading_time && (
+            <div className="inline-flex items-center gap-1 px-3 py-2 text-xs font-mono bg-gray-100 border-2 border-black flex-shrink-0">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
-              {format(new Date(article.published_at), 'MMM dd, yyyy')}
+              {article.reading_time} min read
             </div>
-            {article.reading_time && (
-              <div className="inline-flex items-center gap-1 px-3 py-2 text-xs font-mono bg-gray-100 border-2 border-black">
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-                {article.reading_time} min read
-              </div>
-            )}
-          </div>
+          )}
+        </div>
 
-          {/* Right: Category and Status Badges */}
-          <div className="flex items-center gap-3">
-            {/* Category Badge */}
-            {article.category && (
-              <span className="inline-flex items-center gap-2 px-3 py-2 text-xs font-mono font-bold border-2 bg-purple-100 border-purple-500 text-purple-700">
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                </svg>
-                {article.category}
-              </span>
-            )}
-
-            {/* Status Badge */}
-            <span className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold border-2 ${
-              article.status === 'published'
-                ? 'bg-green-100 border-green-500 text-green-700'
-                : article.status === 'podcast'
-                ? 'bg-blue-100 border-blue-500 text-blue-700'
-                : 'bg-gray-100 border-gray-500 text-gray-700'
-            }`}>
-              <div className={`w-3 h-3 rounded-full ${
-                article.status === 'published' ? 'bg-green-600' :
-                article.status === 'podcast' ? 'bg-blue-600' : 'bg-gray-600'
-              }`}></div>
-              {article.status.toUpperCase()}
+        {/* Second Row: Category and Status Badges */}
+        <div className="mb-6 flex flex-wrap items-center gap-3">
+          {/* Category Badge */}
+          {article.category && (
+            <span className="inline-flex items-center gap-2 px-3 py-2 text-xs font-mono font-bold border-2 bg-purple-100 border-purple-500 text-purple-700 flex-shrink-0">
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              </svg>
+              {article.category}
             </span>
-          </div>
+          )}
+
+          {/* Status Badge */}
+          <span className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold border-2 flex-shrink-0 ${
+            article.status === 'published'
+              ? 'bg-green-100 border-green-500 text-green-700'
+              : article.status === 'podcast'
+              ? 'bg-blue-100 border-blue-500 text-blue-700'
+              : 'bg-gray-100 border-gray-500 text-gray-700'
+          }`}>
+            <div className={`w-3 h-3 rounded-full ${
+              article.status === 'published' ? 'bg-green-600' :
+              article.status === 'podcast' ? 'bg-blue-600' : 'bg-gray-600'
+            }`}></div>
+            {article.status.toUpperCase()}
+          </span>
         </div>
 
         {/* Title */}

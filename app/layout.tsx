@@ -37,7 +37,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-white text-black font-nunito antialiased">
         <div className="min-h-screen flex flex-col">
           <Header />
-          <main className="flex-1 pt-24">{children}</main>
+          <main className="flex-1 pt-12 md:pt-20">{children}</main>
           <Footer />
         </div>
       </body>

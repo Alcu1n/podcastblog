@@ -12,7 +12,10 @@ export default function CategoryDropdown() {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -48,20 +51,14 @@ export default function CategoryDropdown() {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 transition-colors border-2 border-transparent ${
-          isOpen
-            ? "bg-black text-white border-black"
-            : "hover:bg-black hover:text-white hover:border-black"
+        className={`flex items-center gap-2 transition-colors border-2 border-black ${
+          isOpen ? "bg-black text-white" : "hover:bg-black hover:text-white"
         }`}
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
         {/* Category Icon */}
-        <svg
-          className="w-4 h-4"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
           <path
             fillRule="evenodd"
             d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"

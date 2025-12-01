@@ -96,13 +96,13 @@ export default function Header() {
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             <Link href="/">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="border-2 border-black hover:bg-black hover:text-white transition-colors">
                 Home
               </Button>
             </Link>
             <CategoryDropdown />
             <Link href="/about">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="border-2 border-black hover:bg-black hover:text-white transition-colors">
                 About
               </Button>
             </Link>

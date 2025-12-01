@@ -9,7 +9,7 @@ export interface Article {
   published_at: string;
   created_at: string;
   updated_at: string;
-  status: 'draft' | 'published';
+  status: 'draft' | 'published' | 'podcast';
   view_count?: number;
   reading_time?: number;
   // Additional fields from stories table

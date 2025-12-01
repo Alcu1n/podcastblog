@@ -258,11 +258,12 @@ export default function ArticleForm({ mode, article }: ArticleFormProps) {
               </label>
               <select
                 value={formData.status}
-                onChange={(e) => handleInputChange('status', e.target.value as 'draft' | 'published')}
+                onChange={(e) => handleInputChange('status', e.target.value as 'draft' | 'published' | 'podcast')}
                 className="w-full px-4 py-3 border-2 border-black bg-white font-sans text-black focus:outline-none focus:ring-4 focus:ring-blue-300"
               >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
+                <option value="podcast">Podcast</option>
               </select>
             </div>
 

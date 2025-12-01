@@ -24,9 +24,8 @@
   --shadow-hard-large: 8px 8px 0px rgba(0,0,0,1);
   --shadow-brutal: var(--shadow-hard);
 
-  /* Typography - Geometric Fonts */
-  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-  --font-sans: 'Inter', 'Helvetica Neue', sans-serif;
+  /* Typography - Nunito Font */
+  --font-sans: var(--font-nunito), 'Inter', 'Helvetica Neue', sans-serif;
 
   /* Spacing System */
   --spacing-xs: 0.25rem;
@@ -53,8 +52,7 @@
   --color-accent: var(--accent-red);
 
   /* Typography */
-  --font-sans: var(--font-geist-sans), var(--font-sans);
-  --font-mono: var(--font-geist-mono), var(--font-mono);
+  --font-sans: var(--font-nunito), var(--font-sans);
 
   /* Component-specific tokens */
   --border-button: var(--border-brutal);
@@ -155,11 +153,16 @@
   box-shadow: 2px 2px 0px rgba(0,0,0,1);
 }
 
+/* Font Family Classes */
+.font-nunito {
+  font-family: var(--font-nunito), sans-serif;
+}
+
 /* Base body styles */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-nunito), sans-serif;
 }
 
 /* Responsive Design */

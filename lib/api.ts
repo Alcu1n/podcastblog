@@ -17,12 +17,33 @@ function calculateReadingTime(content: string): number {
   return Math.ceil(words / wordsPerMinute);
 }
 
+// Helper function to generate slug from title
+function generateSlugFromTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+}
+
+// Helper function to generate unique slug using title + ID
+function generateUniqueSlug(title: string, id: string | any): string {
+  const titleSlug = generateSlugFromTitle(title);
+  // Ensure ID is converted to string and take first 8 characters
+  const idString = String(id);
+  const idSuffix = idString.substring(0, 8);
+  return `${titleSlug}-${idSuffix}`;
+}
+
 // Helper function to map stories data to Article interface
 function mapStoryToArticle(story: any): Article {
+  // Generate unique slug for backward compatibility if slug field doesn't exist
+  const slug = story.slug || generateUniqueSlug(story.title, story.id);
+
   return {
     id: story.id,
     title: story.title,
-    slug: story.url?.replace(/[^a-zA-Z0-9-_]/g, '-').toLowerCase() || story.id,
+    slug: slug,
     content: story.content,
     excerpt: story.description,
     published_at: story.meta?.published_at || story.created_at,
@@ -79,39 +100,49 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
   const client = createSupabaseAdminClient();
 
   try {
-    // Try direct URL match first
-    let { data, error } = await client
+    // Try to get all articles first for better backward compatibility
+    const { data: allData, error: allError } = await client
       .from('stories')
       .select('*')
-      .eq('url', slug)
-      .single();
+      .limit(1000); // Get all stories to search
 
-    // If not found by URL, try matching slug from URL field
-    if (error && (error.code === 'PGRST116' || error.code === '42703')) {
-      const { data: allData, error: allError } = await client
-        .from('stories')
-        .select('*')
-        .limit(1000); // Get all stories to search
-
-      if (!allError && allData) {
-        const found = allData.find(story => {
-          const storySlug = story.url?.replace(/[^a-zA-Z0-9-_]/g, '-').toLowerCase();
-          return storySlug === slug;
-        });
-        data = found || null;
-        error = found ? null : allError;
-      }
+    if (allError) {
+      handleSupabaseError(allError);
+      return null;
     }
 
-    if (error) {
-      // If article not found, return null instead of throwing error
-      if (error.code === 'PGRST116') {
-        return null;
-      }
-      handleSupabaseError(error);
+    if (!allData || allData.length === 0) {
+      return null;
     }
 
-    return data ? mapStoryToArticle(data) : null;
+    // First, try direct slug field match
+    let found = allData.find(story => story.slug === slug);
+
+    // If not found, try matching slug generated from URL field (for backward compatibility)
+    if (!found) {
+      found = allData.find(story => {
+        const urlSlug = story.url?.replace(/[^a-zA-Z0-9-_]/g, '-').toLowerCase();
+        return urlSlug === slug;
+      });
+    }
+
+    // If still not found, try matching slug generated from title field (for maximum compatibility)
+    if (!found) {
+      found = allData.find(story => {
+        const titleSlug = generateSlugFromTitle(story.title);
+        return titleSlug === slug;
+      });
+    }
+
+    // Final fallback: try matching unique slug generated from title + ID
+    if (!found) {
+      found = allData.find(story => {
+        const uniqueSlug = generateUniqueSlug(story.title, story.id);
+        return uniqueSlug === slug;
+      });
+    }
+
+    return found ? mapStoryToArticle(found) : null;
   } catch (error) {
     console.error('Error fetching article:', error);
     return null;
@@ -281,14 +312,13 @@ export async function createArticle(data: ArticleCreateInput): Promise<AdminActi
 
     // Prepare article data
     const now = new Date().toISOString();
-    const slug = data.slug || generateSlug(data.title);
-
-    const articleData = {
+    // For new articles, we'll generate the slug after getting the ID
+    let articleData: any = {
       title: data.title.trim(),
       content: data.content.trim(),
       description: data.excerpt?.trim() || data.description?.trim(),
       status: data.status,
-      url: data.url || slug,
+      url: data.url, // Keep external URL if provided
       categories: data.categories || null,
       meta: {
         view_count: 0,
@@ -298,6 +328,9 @@ export async function createArticle(data: ArticleCreateInput): Promise<AdminActi
       },
       created_at: now
     };
+
+    // Note: We don't set slug in database since the column doesn't exist
+    // Slug is generated dynamically in mapStoryToArticle function
 
     const { data: result, error } = await client
       .from('stories')
@@ -370,7 +403,11 @@ export async function updateArticle(data: ArticleUpdateInput): Promise<AdminActi
     };
 
     // Only update provided fields
-    if (data.title !== undefined) updateData.title = data.title.trim();
+    if (data.title !== undefined) {
+      updateData.title = data.title.trim();
+      // Note: We don't update slug in database since the column doesn't exist
+      // Slug is generated dynamically in mapStoryToArticle function
+    }
     if (data.content !== undefined) updateData.content = data.content.trim();
     if (data.excerpt !== undefined) updateData.description = data.excerpt.trim();
     if (data.description !== undefined) updateData.description = data.description.trim();
@@ -385,6 +422,8 @@ export async function updateArticle(data: ArticleUpdateInput): Promise<AdminActi
     }
     if (data.url !== undefined) updateData.url = data.url;
     if (data.categories !== undefined) updateData.categories = data.categories || null;
+    // Note: We don't update slug in database since the column doesn't exist
+    // Slug is generated dynamically in mapStoryToArticle function
 
     const { data: result, error } = await client
       .from('stories')

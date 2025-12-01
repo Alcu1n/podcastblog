@@ -24,20 +24,23 @@ export default function ArticleItem({
       'border-l-8 border-l-black',
       'border-4 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)]',
       'hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_rgba(0,0,0,1)]',
-      'hover:border-l-green-500',
+      'hover:bg-[#FAF7F0]', // Comfortable beige background on hover
       isFeatured ? 'p-8' : 'p-6',
       className
     )}>
       <div className="space-y-4">
         {/* Meta information */}
-        <div className="space-y-2">
-          <CaptionText>
+        <div className="inline-flex items-center bg-yellow-100 border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,1)] px-4 py-2">
+          <CaptionText className="font-normal">
             {format(new Date(article.published_at), 'MMM dd, yyyy')}
           </CaptionText>
           {article.reading_time && (
-            <CaptionText className="ml-4">
-              {article.reading_time} min read
-            </CaptionText>
+            <>
+              <span className="mx-3 text-black font-bold">•</span>
+              <CaptionText className="font-normal">
+                {article.reading_time} min read
+              </CaptionText>
+            </>
           )}
         </div>
 

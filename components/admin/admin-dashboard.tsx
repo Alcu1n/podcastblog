@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, RefreshCw, Eye, EyeOff, LogOut, Shield } from 'lucide-react';
+import { Plus, Edit, Trash2, RefreshCw, Eye, EyeOff, LogOut, Shield, Calendar, FileText, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getArticles, deleteArticle } from '@/lib/api';
@@ -140,102 +140,151 @@ export default function AdminDashboard() {
             </Link>
           </div>
         ) : (
-          /* Articles List */
-          <div className="space-y-4">
-            <div className="border-2 border-gray-300 p-4 bg-gray-50">
+          /* Articles Table */
+          <div className="border-4 border-black bg-white shadow-hard">
+            {/* Statistics Bar */}
+            <div className="border-b-4 border-black bg-gray-50 p-4">
               <div className="flex items-center justify-between">
-                <span className="font-mono font-bold">
-                  Total Articles: {articles.length}
-                </span>
-                <span className="font-mono text-sm text-gray-600">
-                  Published: {articles.filter(a => a.status === 'published').length} |
-                  Draft: {articles.filter(a => a.status === 'draft').length}
-                </span>
+                <div className="flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-black" />
+                  <span className="font-mono font-bold text-black">
+                    Total Articles: {articles.length}
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 text-sm font-mono">
+                  <span className="flex items-center gap-1">
+                    <div className="w-3 h-3 bg-green-500 border-2 border-black"></div>
+                    Published: {articles.filter(a => a.status === 'published').length}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <div className="w-3 h-3 bg-blue-500 border-2 border-black"></div>
+                    Podcast: {articles.filter(a => a.status === 'podcast').length}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <div className="w-3 h-3 bg-gray-400 border-2 border-black"></div>
+                    Draft: {articles.filter(a => a.status === 'draft').length}
+                  </span>
+                </div>
               </div>
             </div>
 
-            {articles.map((article) => (
-              <article
-                key={article.id}
-                className="border-2 border-black bg-white shadow-hard hover:shadow-hard-large transition-all"
-              >
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h2 className="text-xl font-mono font-black text-black">
-                          {article.title}
-                        </h2>
-                        <span className={`px-2 py-1 text-xs font-mono font-bold border-2 ${
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                {/* Table Header */}
+                <thead className="bg-gray-100 border-b-4 border-black">
+                  <tr>
+                    <th className="px-4 py-3 text-left font-mono text-sm text-black border-r-2 border-black">
+                      Title
+                    </th>
+                    <th className="px-4 py-3 text-left font-mono text-sm text-black border-r-2 border-black">
+                      Status
+                    </th>
+                    <th className="px-4 py-3 text-left font-mono text-sm text-black border-r-2 border-black">
+                      URL
+                    </th>
+                    <th className="px-4 py-3 text-left font-mono text-sm text-black border-r-2 border-black">
+                      Created
+                    </th>
+                    <th className="px-4 py-3 text-center font-mono text-sm text-black">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+
+                {/* Table Body */}
+                <tbody>
+                  {articles.map((article, index) => (
+                    <tr
+                      key={article.id}
+                      className={`hover:bg-gray-50 transition-colors ${
+                        index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                      }`}
+                    >
+                      {/* Title Column */}
+                      <td className="px-4 py-3 border-r-2 border-gray-200">
+                        <Link
+                          href={`/articles/${article.slug}`}
+                          className="font-mono text-sm text-blue-700 hover:text-blue-900 hover:underline cursor-pointer"
+                        >
+                          {article.title.length > 8 ? `${article.title.substring(0, 8)}...` : article.title}
+                        </Link>
+                      </td>
+
+                      {/* Status Column */}
+                      <td className="px-4 py-3 border-r-2 border-gray-200">
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-mono border ${
                           article.status === 'published'
                             ? 'bg-green-100 border-green-500 text-green-700'
-                            : 'bg-yellow-100 border-yellow-500 text-yellow-700'
+                            : article.status === 'podcast'
+                            ? 'bg-blue-100 border-blue-500 text-blue-700'
+                            : 'bg-gray-100 border-gray-500 text-gray-700'
                         }`}>
+                          <div className={`w-2 h-2 rounded-full ${
+                            article.status === 'published' ? 'bg-green-600' :
+                            article.status === 'podcast' ? 'bg-blue-600' : 'bg-gray-600'
+                          }`}></div>
                           {article.status.toUpperCase()}
                         </span>
-                      </div>
-                      {article.excerpt && (
-                        <p className="text-gray-700 mb-2 line-clamp-2">
-                          {article.excerpt}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-4 text-sm text-gray-600 font-mono">
-                        <span>
-                          Created: {format(new Date(article.created_at), 'MMM d, yyyy')}
-                        </span>
-                        {article.published_at && article.status === 'published' && (
-                          <span>
-                            Published: {format(new Date(article.published_at), 'MMM d, yyyy')}
-                          </span>
-                        )}
-                        {article.view_count !== undefined && (
-                          <span className="flex items-center gap-1">
-                            <Eye className="w-3 h-3" />
-                            {article.view_count} views
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                      </td>
 
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm font-mono text-gray-600">
-                      {article.url && (
-                        <span>URL: /articles/{article.url}</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={`/admin/edit/${article.id}`}
-                        className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-100 border-2 border-blue-500 text-blue-700 hover:bg-blue-200 transition-colors"
-                      >
-                        <Edit className="w-3 h-3" />
-                        Edit
-                      </Link>
-                      {article.status === 'published' && (
-                        <a
-                          href={`/articles/${article.url}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 border-2 border-gray-500 text-gray-700 hover:bg-gray-200 transition-colors"
-                        >
-                          <Eye className="w-3 h-3" />
-                          View
-                        </a>
-                      )}
-                      <button
-                        onClick={() => handleDelete(article.id, article.title)}
-                        disabled={deletingId === article.id}
-                        className="flex items-center gap-1 px-3 py-1 text-sm bg-red-100 border-2 border-red-500 text-red-700 hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        {deletingId === article.id ? 'Deleting...' : 'Delete'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            ))}
+                      {/* URL Column */}
+                      <td className="px-4 py-3 border-r-2 border-gray-200">
+                        {article.url ? (
+                          <a
+                            href={article.url.startsWith('http') ? article.url : `https://${article.url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-mono text-sm text-blue-700 hover:text-blue-900 hover:underline cursor-pointer"
+                          >
+                            {article.url.length > 20 ? `${article.url.substring(0, 20)}...` : article.url}
+                          </a>
+                        ) : (
+                          <span className="font-mono text-sm text-gray-400">-</span>
+                        )}
+                      </td>
+
+                      {/* Created Date Column */}
+                      <td className="px-4 py-3 border-r-2 border-gray-200">
+                        <div className="flex items-center gap-1 text-sm font-mono text-gray-700">
+                          <Calendar className="w-3 h-3" />
+                          {format(new Date(article.created_at), 'MMM d, yyyy')}
+                        </div>
+                      </td>
+
+                      {/* Actions Column */}
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-center gap-1">
+                          <Link
+                            href={`/admin/edit/${article.id}`}
+                            className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 border border-blue-500 text-blue-700 hover:bg-blue-200 transition-colors font-mono"
+                          >
+                            <Edit className="w-3 h-3" />
+                            Edit
+                          </Link>
+                          <Link
+                            href={`/articles/${article.slug}`}
+                            target="_blank"
+                            className="flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 border border-gray-500 text-gray-700 hover:bg-gray-200 transition-colors font-mono"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            View
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(article.id, article.title)}
+                            disabled={deletingId === article.id}
+                            className="flex items-center gap-1 px-2 py-1 text-xs bg-red-100 border border-red-500 text-red-700 hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-mono"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            {deletingId === article.id ? '...' : 'Delete'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

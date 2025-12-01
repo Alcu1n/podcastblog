@@ -100,13 +100,30 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
   return (
     <Container size="md">
-      <div className="py-8 md:py-16">
+      <div className="py-4 md:py-8">
         {/* Hero section */}
         <header className="mb-12 border-b-8 border-black pb-8">
-          <H1 className="mb-4">Podcast Blog</H1>
-          <BodyText className="text-lg md:text-xl max-w-3xl">
-            播客故事文章.
-          </BodyText>
+          <div className="max-w-3xl">
+            <H1 className="mb-4 leading-tight">
+              <span className="block">Long Stories</span>
+              <span className="block text-red-500">From Podcasts</span>
+            </H1>
+
+            <div className="bg-gray-50 border-l-4 border-black p-4 mb-6">
+              <BodyText className="text-lg font-medium">
+                A curated collection of extraordinary long-form stories from the world's best podcasts.
+              </BodyText>
+            </div>
+
+            <div className="flex items-center gap-6 text-sm">
+              <span className="inline-flex items-center gap-2 px-3 py-1 bg-black text-white font-mono">
+                📚 Long Reads
+              </span>
+              <span className="text-gray-500 font-mono">
+                Updated weekly with compelling stories
+              </span>
+            </div>
+          </div>
         </header>
 
         {/* Article list */}
@@ -140,20 +157,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             )}
           </nav>
         )}
-
-        {/* Call to action */}
-        <div className="mt-16 text-center">
-          <div className="border-4 border-black bg-yellow-100 p-8 inline-block">
-            <H3 className="mb-4">Want to contribute?</H3>
-            <BodyText>
-              This blog is built with Next.js 16, React 19, and good taste. Fork
-              it on GitHub and make it your own.
-            </BodyText>
-            <div className="mt-6">
-              <Button variant="accent">View on GitHub</Button>
-            </div>
-          </div>
-        </div>
       </div>
     </Container>
   );

@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Article } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 
 // Suppress the className prop assertion error for development
 // TODO: Investigate the proper way to handle this in react-markdown v10
@@ -27,20 +28,72 @@ interface ArticleDetailProps {
 }
 
 export default function ArticleDetail({ article }: ArticleDetailProps) {
+  const router = useRouter();
+
+  // Function to handle "Back to Articles"
+  const handleBackToArticles = () => {
+    router.push('/');
+  };
+
+  // Function to handle "Share on Twitter"
+  const handleShareOnTwitter = () => {
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      `Check out this amazing story: ${article.title} - ${article.excerpt || ''}`
+    )}&url=${encodeURIComponent(window.location.href)}`;
+    window.open(twitterUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  // Function to handle "Copy Link"
+  const handleCopyLink = async () => {
+    try {
+      const url = window.location.href;
+      await navigator.clipboard.writeText(url);
+      // You could add a toast notification here
+      alert('Link copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+      alert('Failed to copy link. Please copy manually.');
+    }
+  };
+
   return (
     <article className="max-w-4xl mx-auto">
       {/* Header */}
       <header className="mb-8 border-b-8 border-black pb-8">
-        {/* Meta information */}
-        <div className="mb-6 space-y-2">
-          <CaptionText>
-            {format(new Date(article.published_at), 'MMMM dd, yyyy')}
-          </CaptionText>
-          {article.reading_time && (
-            <CaptionText className="ml-4">
-              {article.reading_time} min read
-            </CaptionText>
-          )}
+        {/* Meta information - Single Row with Status on Right */}
+        <div className="mb-6 flex items-center justify-between">
+          {/* Left: Date and Reading Time */}
+          <div className="flex items-center gap-4 text-left">
+            <div className="inline-flex items-center gap-1 px-3 py-2 text-xs font-mono bg-gray-100 border-2 border-black">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {format(new Date(article.published_at), 'MMM dd, yyyy')}
+            </div>
+            {article.reading_time && (
+              <div className="inline-flex items-center gap-1 px-3 py-2 text-xs font-mono bg-gray-100 border-2 border-black">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                {article.reading_time} min read
+              </div>
+            )}
+          </div>
+
+          {/* Right: Status Badge */}
+          <span className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold border-2 ${
+            article.status === 'published'
+              ? 'bg-green-100 border-green-500 text-green-700'
+              : article.status === 'podcast'
+              ? 'bg-blue-100 border-blue-500 text-blue-700'
+              : 'bg-gray-100 border-gray-500 text-gray-700'
+          }`}>
+            <div className={`w-3 h-3 rounded-full ${
+              article.status === 'published' ? 'bg-green-600' :
+              article.status === 'podcast' ? 'bg-blue-600' : 'bg-gray-600'
+            }`}></div>
+            {article.status.toUpperCase()}
+          </span>
         </div>
 
         {/* Title */}
@@ -155,16 +208,16 @@ export default function ArticleDetail({ article }: ArticleDetailProps) {
       <footer className="mt-16 pt-8 border-t-4 border-black">
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
           <div className="flex items-center space-x-4">
-            <Button variant="secondary">
+            <Button variant="secondary" onClick={handleBackToArticles}>
               ← Back to Articles
             </Button>
           </div>
 
           <div className="flex items-center space-x-4">
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={handleShareOnTwitter}>
               Share on Twitter
             </Button>
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={handleCopyLink}>
               Copy Link
             </Button>
           </div>

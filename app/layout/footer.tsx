@@ -1,66 +1,64 @@
 import Container from "@/components/layout/container";
-import { CaptionText, BodyText } from "@/components/ui/typography";
+import { CaptionText } from "@/components/ui/typography";
+import { Twitter, Github } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="border-t-4 border-black bg-gray-100 mt-16">
+    <footer className="border-t-2 border-gray-200 bg-white mt-auto">
       <Container>
-        <div className="py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* About section */}
-            <div>
-              <h3 className="font-mono font-bold text-lg mb-4">BRUTAL.BLOG</h3>
-              <BodyText className="text-sm">
-                Clean code, good taste, brutal design. Thoughts on programming,
-                architecture, and the art of software engineering.
-              </BodyText>
+        <div className="py-12">
+          {/* Centered content */}
+          <div className="flex flex-col items-center justify-center space-y-8">
+            {/* Brand */}
+            <div className="text-center">
+              <h3 className="font-nunito font-extrabold text-2xl text-black mb-2">
+                PodCast Story
+              </h3>
+              <CaptionText className="text-gray-600">
+                Discover amazing podcast stories
+              </CaptionText>
             </div>
 
-            {/* Links section */}
-            <div>
-              <h4 className="font-mono font-bold text-lg mb-4">Links</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a
-                    href="#"
-                    className="font-sans text-black hover:text-red-500 transition-colors"
-                  >
-                    GitHub
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="font-sans text-black hover:text-red-500 transition-colors"
-                  >
-                    Twitter
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="font-sans text-black hover:text-red-500 transition-colors"
-                  >
-                    RSS Feed
-                  </a>
-                </li>
-              </ul>
+            {/* Social Links */}
+            <div className="flex items-center space-x-6">
+              <a
+                href="https://x.com/Nonametoregist"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-10 h-10 bg-white border-2 border-black rounded-lg shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-100"
+              >
+                <Twitter className="w-5 h-5 text-black" />
+              </a>
+              <a
+                href="https://github.com/Alcu1n"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-10 h-10 bg-white border-2 border-black rounded-lg shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] transition-all duration-100"
+              >
+                <Github className="w-5 h-5 text-black" />
+              </a>
             </div>
 
-            {/* Newsletter or other section */}
-            <div>
-              <h4 className="font-mono font-bold text-lg mb-4">More</h4>
-              <BodyText className="text-sm">
-                Built with Next.js 16, React 19, and good taste.
-              </BodyText>
+            {/* Copyright */}
+            <div className="text-center">
+              <CaptionText className="text-gray-500">
+                © {new Date().getFullYear()} PodCast Story. Built by{" "}
+                <a
+                  href="mailto:alcuin.ch@gmail.com"
+                  className="inline-flex items-center hover:text-red-500 transition-colors"
+                  title="Contact lemon"
+                >
+                  <Image
+                    src="/TdesignLemon.svg"
+                    alt="Lemon"
+                    width={16}
+                    height={16}
+                    className="ml-1"
+                  />
+                </a>
+              </CaptionText>
             </div>
-          </div>
-
-          {/* Copyright */}
-          <div className="border-t-2 border-black mt-8 pt-6 text-center">
-            <CaptionText>
-              © {new Date().getFullYear()} PodCast Blog. Built with alcu1n.
-            </CaptionText>
           </div>
         </div>
       </Container>

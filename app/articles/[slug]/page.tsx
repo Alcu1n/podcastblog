@@ -161,7 +161,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <Container size="md">
-      <div className="py-8 md:py-16">
+      <div className="py-2 md:py-4">
         <ArticleDetail article={article} />
       </div>
     </Container>

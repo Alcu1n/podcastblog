@@ -50,12 +50,12 @@ function mapStoryToArticle(story: any): Article {
     created_at: story.created_at,
     updated_at: story.meta?.updated_at || story.created_at,
     status: story.status || 'draft',
+    category: story.category || undefined,
     view_count: story.meta?.view_count || 0,
     reading_time: calculateReadingTime(story.content),
     url: story.url,
     meta: story.meta,
     description: story.description,
-    categories: story.categories || '',
   };
 }
 
@@ -181,6 +181,44 @@ export async function searchArticles(
     };
   } catch (error) {
     console.error('Error searching articles:', error);
+    return {
+      articles: [],
+      totalCount: 0,
+      currentPage: page,
+      totalPages: 0,
+    };
+  }
+}
+
+// Get articles by category
+export async function getArticlesByCategory(
+  category: string,
+  page: number = 1,
+  limit: number = 10
+): Promise<ArticleListResponse> {
+  const offset = (page - 1) * limit;
+  const client = createSupabaseAdminClient();
+
+  try {
+    const { data: articles, error, count } = await client
+      .from('stories')
+      .select('*', { count: 'exact' })
+      .eq('category', category)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (error) {
+      handleSupabaseError(error);
+    }
+
+    return {
+      articles: (articles || []).map(mapStoryToArticle),
+      totalCount: count || 0,
+      currentPage: page,
+      totalPages: Math.ceil((count || 0) / limit),
+    };
+  } catch (error) {
+    console.error('Error fetching articles by category:', error);
     return {
       articles: [],
       totalCount: 0,
@@ -318,8 +356,8 @@ export async function createArticle(data: ArticleCreateInput): Promise<AdminActi
       content: data.content.trim(),
       description: data.excerpt?.trim() || data.description?.trim(),
       status: data.status,
+      category: data.category || null,
       url: data.url, // Keep external URL if provided
-      categories: data.categories || null,
       meta: {
         view_count: 0,
         created_at: now,
@@ -366,9 +404,9 @@ export async function updateArticle(data: ArticleUpdateInput): Promise<AdminActi
       content: data.content || '',
       excerpt: data.excerpt,
       status: data.status || 'draft',
+      category: data.category || undefined,
       url: data.url,
       description: data.description,
-      categories: data.categories || ''
     };
 
     const errors = validateArticleForm(formData);
@@ -421,7 +459,7 @@ export async function updateArticle(data: ArticleUpdateInput): Promise<AdminActi
       };
     }
     if (data.url !== undefined) updateData.url = data.url;
-    if (data.categories !== undefined) updateData.categories = data.categories || null;
+    if (data.category !== undefined) updateData.category = data.category || null;
     // Note: We don't update slug in database since the column doesn't exist
     // Slug is generated dynamically in mapStoryToArticle function
 

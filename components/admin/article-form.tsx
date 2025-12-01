@@ -12,7 +12,9 @@ import {
 import {
   type Article,
   type ArticleFormData,
-  type FormErrors
+  type FormErrors,
+  type ArticleCategory,
+  ARTICLE_CATEGORIES
 } from '@/lib/types';
 
 interface ArticleFormProps {
@@ -32,9 +34,9 @@ export default function ArticleForm({ mode, article }: ArticleFormProps) {
     content: article?.content || '',
     excerpt: article?.excerpt || '',
     status: article?.status || 'draft',
+    category: article?.category || undefined,
     url: article?.url || '',
-    description: article?.description || '',
-    categories: article?.categories || ''
+    description: article?.description || ''
   });
 
   // Update form when article changes (for edit mode)
@@ -45,9 +47,9 @@ export default function ArticleForm({ mode, article }: ArticleFormProps) {
         content: article.content || '',
         excerpt: article.excerpt || '',
         status: article.status || 'draft',
+        category: article.category || undefined,
         url: article.url || '',
-        description: article.description || '',
-        categories: article?.categories || ''
+        description: article.description || ''
       });
     }
   }, [article, mode]);
@@ -267,18 +269,23 @@ export default function ArticleForm({ mode, article }: ArticleFormProps) {
               </select>
             </div>
 
-            {/* Categories (optional) */}
+            {/* Category */}
             <div>
               <label className="block text-sm font-mono font-bold text-black mb-2">
-                Categories (comma separated)
+                Category
               </label>
-              <input
-                type="text"
-                value={formData.categories || ''}
-                onChange={(e) => handleInputChange('categories', e.target.value)}
+              <select
+                value={formData.category || ''}
+                onChange={(e) => handleInputChange('category', e.target.value as ArticleCategory || undefined)}
                 className="w-full px-4 py-3 border-2 border-black bg-white font-sans text-black focus:outline-none focus:ring-4 focus:ring-blue-300"
-                placeholder="tech, programming, tutorial"
-              />
+              >
+                <option value="">Select a category</option>
+                {ARTICLE_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Form Actions */}

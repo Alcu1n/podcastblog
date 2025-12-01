@@ -1,5 +1,22 @@
 // Core data structures following Good Taste principles
 
+export type ArticleCategory =
+  | 'True Crime'
+  | 'Historical Chronicles'
+  | 'Extraordinary Lives'
+  | 'The Unexplained'
+  | 'Adventure & Survival'
+  | 'Cultural Touchstones';
+
+export const ARTICLE_CATEGORIES: ArticleCategory[] = [
+  'True Crime',
+  'Historical Chronicles',
+  'Extraordinary Lives',
+  'The Unexplained',
+  'Adventure & Survival',
+  'Cultural Touchstones'
+];
+
 export interface Article {
   id: string;
   title: string;
@@ -10,13 +27,13 @@ export interface Article {
   created_at: string;
   updated_at: string;
   status: 'draft' | 'published' | 'podcast';
+  category?: ArticleCategory;
   view_count?: number;
   reading_time?: number;
   // Additional fields from stories table
   url?: string;
   meta?: any;
   description?: string;
-  categories?: string;
 }
 
 // API response types
@@ -70,9 +87,9 @@ export interface ArticleFormData {
   content: string;
   excerpt?: string;
   status: ArticleStatus;
+  category?: ArticleCategory;
   url?: string;
   description?: string;
-  categories?: string;
 }
 
 export interface ArticleCreateInput extends ArticleFormData {

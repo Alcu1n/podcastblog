@@ -60,7 +60,7 @@ export default function ArticleDetail({ article }: ArticleDetailProps) {
     <article className="max-w-4xl mx-auto">
       {/* Header */}
       <header className="mb-8 border-b-8 border-black pb-8">
-        {/* Meta information - Single Row with Status on Right */}
+        {/* Meta information - Single Row with Category and Status */}
         <div className="mb-6 flex items-center justify-between">
           {/* Left: Date and Reading Time */}
           <div className="flex items-center gap-4 text-left">
@@ -80,20 +80,33 @@ export default function ArticleDetail({ article }: ArticleDetailProps) {
             )}
           </div>
 
-          {/* Right: Status Badge */}
-          <span className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold border-2 ${
-            article.status === 'published'
-              ? 'bg-green-100 border-green-500 text-green-700'
-              : article.status === 'podcast'
-              ? 'bg-blue-100 border-blue-500 text-blue-700'
-              : 'bg-gray-100 border-gray-500 text-gray-700'
-          }`}>
-            <div className={`w-3 h-3 rounded-full ${
-              article.status === 'published' ? 'bg-green-600' :
-              article.status === 'podcast' ? 'bg-blue-600' : 'bg-gray-600'
-            }`}></div>
-            {article.status.toUpperCase()}
-          </span>
+          {/* Right: Category and Status Badges */}
+          <div className="flex items-center gap-3">
+            {/* Category Badge */}
+            {article.category && (
+              <span className="inline-flex items-center gap-2 px-3 py-2 text-xs font-mono font-bold border-2 bg-purple-100 border-purple-500 text-purple-700">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                </svg>
+                {article.category}
+              </span>
+            )}
+
+            {/* Status Badge */}
+            <span className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold border-2 ${
+              article.status === 'published'
+                ? 'bg-green-100 border-green-500 text-green-700'
+                : article.status === 'podcast'
+                ? 'bg-blue-100 border-blue-500 text-blue-700'
+                : 'bg-gray-100 border-gray-500 text-gray-700'
+            }`}>
+              <div className={`w-3 h-3 rounded-full ${
+                article.status === 'published' ? 'bg-green-600' :
+                article.status === 'podcast' ? 'bg-blue-600' : 'bg-gray-600'
+              }`}></div>
+              {article.status.toUpperCase()}
+            </span>
+          </div>
         </div>
 
         {/* Title */}
